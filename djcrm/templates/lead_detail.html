@@ -19,10 +19,12 @@
 </head>
 <body>
     <a href="/leads">Go back</a>
+    <a href="update/">Update</a>
     <hr />
     <h1>Current lead:</h1>
     <div class="lead>">
-    {{ lead.first_name }} {{ lead.last_name }}. Age: {{ lead.age }}
+        <p>{{ lead.first_name }} {{ lead.last_name }}. Age: {{ lead.age }}</p>
+        <p>Lead's agent: {{ lead.agent }}</p>
     </div>
 </body>
 </html>
