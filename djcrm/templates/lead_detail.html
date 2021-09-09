@@ -1,30 +1,17 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Detail</title>
-    <style>
-        .lead {
-            padding-top: 10px;
-            padding-bottom: 10px;
-            padding-left: 6px;
-            padding-right: 6px;
-            margin-top: 10px;
-            width: 100%;
-        }
-    </style>
-</head>
-<body>
-    <a href="/leads">Go back</a>
-    <a href="update/">Update</a>
+{% extends 'base.html' %}
+
+{% block title %}
+    Detail
+{% endblock %}
+
+{% block content %}
+    <a href="{% url 'leads:lead-list' %}">Go back</a>
     <hr />
     <h1>Current lead:</h1>
     <div class="lead>">
         <p>{{ lead.first_name }} {{ lead.last_name }}. Age: {{ lead.age }}</p>
         <p>Lead's agent: {{ lead.agent }}</p>
     </div>
-</body>
-</html>
+    <a href="{% url 'leads:lead-update' lead.pk %}">Update</a>
+    <a href="{% url 'leads:lead-delete' lead.pk %}">delete</a>
+{% endblock %}
