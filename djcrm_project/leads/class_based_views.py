@@ -18,19 +18,19 @@ class LandingPageView(generic.TemplateView):
 
 
 class LeadListView(LoginRequiredMixin, generic.ListView):
-    template_name = "lead_list.html"
+    template_name = "leads/lead_list.html"
     queryset = Lead.objects.all()
     context_object_name = "leads"
 
 
 class LeadDetailView(LoginRequiredMixin, generic.DetailView):
-    template_name = "lead_detail.html"
+    template_name = "leads/lead_detail.html"
     queryset = Lead.objects.all()
     context_object_name = "lead"
 
 
 class LeadCreateView(LoginRequiredMixin, generic.CreateView):
-    template_name = "lead_create.html"
+    template_name = "leads/lead_create.html"
     form_class = LeadModelForm
     success_url = reverse_lazy("leads:lead-list")
 
@@ -45,13 +45,15 @@ class LeadCreateView(LoginRequiredMixin, generic.CreateView):
 
 
 class LeadUpdateView(LoginRequiredMixin, generic.UpdateView):
-    template_name = "lead_update.html"
+    template_name = "leads/lead_update.html"
     form_class = LeadModelForm
     queryset = Lead.objects.all()
+    context_object_name = "lead"
     success_url = reverse_lazy("leads:lead-list")
 
 
 class LeadDeleteView(LoginRequiredMixin, generic.DeleteView):
-    template_name = "lead_delete.html"
+    template_name = "leads/lead_delete.html"
     queryset = Lead.objects.all()
+    context_object_name = "lead"
     success_url = reverse_lazy("leads:lead-list")

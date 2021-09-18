@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'leads',
+    'agents',
 ]
 
 MIDDLEWARE = [
@@ -134,7 +135,7 @@ AUTH_USER_MODEL = 'leads.User'
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-LOGIN_REDIRECT_URL = reverse_lazy("leads:lead-list")    # перенаправление при входе в систему (django.contrib.auth.views.LoginView)
+LOGIN_REDIRECT_URL = reverse_lazy("landing-page")    # перенаправление при входе в систему (django.contrib.auth.views.LoginView)
 LOGIN_URL = reverse_lazy("login")
 
 LOGOUT_REDIRECT_URL = reverse_lazy("landing-page")

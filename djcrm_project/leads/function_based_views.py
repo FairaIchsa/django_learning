@@ -9,7 +9,7 @@ def landing_page(request):
     context = {
         "User": request.user
     }
-    return render(request, "landing.html", context)
+    return render(request, "leads/landing.html", context)
 
 
 def lead_list(request):
@@ -17,7 +17,7 @@ def lead_list(request):
     context = {
         "leads": Leads
     }
-    return render(request, "lead_list.html", context)
+    return render(request, "leads/lead_list.html", context)
 
 
 def lead_detail(request, pk):
@@ -25,7 +25,7 @@ def lead_detail(request, pk):
     context = {
         "lead": lead
     }
-    return render(request, "lead_detail.html", context)
+    return render(request, "leads/lead_detail.html", context)
 
 
 def lead_create(request):
@@ -38,7 +38,7 @@ def lead_create(request):
     context = {
         "form": form
     }
-    return render(request, "lead_create.html", context)
+    return render(request, "leads/lead_create.html", context)
 
 
 def lead_update(request, pk):
@@ -53,7 +53,7 @@ def lead_update(request, pk):
         "lead": lead,
         "form": form
     }
-    return render(request, "lead_update.html", context)
+    return render(request, "leads/lead_update.html", context)
 
 
 def lead_delete(request, pk):
