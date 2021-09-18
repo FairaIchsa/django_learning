@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from django.urls import reverse_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 import django.core.mail.backends.console
@@ -133,6 +134,7 @@ AUTH_USER_MODEL = 'leads.User'
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-LOGIN_REDIRECT_URL = '/'     # перенаправление при входе в систему (django.contrib.auth.views.LoginView)
+LOGIN_REDIRECT_URL = reverse_lazy("leads:lead-list")    # перенаправление при входе в систему (django.contrib.auth.views.LoginView)
+LOGIN_URL = reverse_lazy("login")
 
-
+LOGOUT_REDIRECT_URL = reverse_lazy("landing-page")

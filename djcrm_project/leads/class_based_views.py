@@ -1,6 +1,7 @@
 from django.core.mail import send_mail
 from django.urls import reverse_lazy
 from django.views import generic
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Lead, Agent
 from .forms import LeadModelForm, CustomUserCreationForm
@@ -16,19 +17,19 @@ class LandingPageView(generic.TemplateView):
     template_name = "landing.html"
 
 
-class LeadListView(generic.ListView):
+class LeadListView(LoginRequiredMixin, generic.ListView):
     template_name = "lead_list.html"
     queryset = Lead.objects.all()
     context_object_name = "leads"
 
 
-class LeadDetailView(generic.DetailView):
+class LeadDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = "lead_detail.html"
     queryset = Lead.objects.all()
     context_object_name = "lead"
 
 
-class LeadCreateView(generic.CreateView):
+class LeadCreateView(LoginRequiredMixin, generic.CreateView):
     template_name = "lead_create.html"
     form_class = LeadModelForm
     success_url = reverse_lazy("leads:lead-list")
@@ -43,14 +44,14 @@ class LeadCreateView(generic.CreateView):
         return super(LeadCreateView, self).form_valid(form)
 
 
-class LeadUpdateView(generic.UpdateView):
+class LeadUpdateView(LoginRequiredMixin, generic.UpdateView):
     template_name = "lead_update.html"
     form_class = LeadModelForm
     queryset = Lead.objects.all()
     success_url = reverse_lazy("leads:lead-list")
 
 
-class LeadDeleteView(generic.DeleteView):
+class LeadDeleteView(LoginRequiredMixin, generic.DeleteView):
     template_name = "lead_delete.html"
     queryset = Lead.objects.all()
     success_url = reverse_lazy("leads:lead-list")
