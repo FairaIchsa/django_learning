@@ -4,10 +4,11 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    pass
+    is_organiser = models.BooleanField(default=False)
+    is_agent = models.BooleanField(default=True)
 
 
-class UserProfile(models.Model):
+class Organisation(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -16,7 +17,7 @@ class UserProfile(models.Model):
 
 class Agent(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    organisation = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.username
@@ -26,15 +27,16 @@ class Lead(models.Model):
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     age = models.PositiveIntegerField(default=0)
-    agent = models.ForeignKey(Agent, on_delete=models.CASCADE)
+    organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE)
+    agent = models.ForeignKey(Agent, null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
 
 def post_user_created_signal(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
+    if created and instance.is_organiser:
+        Organisation.objects.create(user=instance)
 
 
 post_save.connect(post_user_created_signal, sender=User)    # post_save - действие после сохранения
