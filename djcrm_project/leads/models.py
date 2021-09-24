@@ -23,10 +23,19 @@ class Agent(models.Model):
         return self.user.username
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=30)
+    organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
 class Lead(models.Model):
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     age = models.PositiveIntegerField(default=0)
+    category = models.ForeignKey(Category, null=True, blank=True, related_name="leads", on_delete=models.SET_NULL)
     organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE)
     agent = models.ForeignKey(Agent, null=True, blank=True, on_delete=models.SET_NULL)
 

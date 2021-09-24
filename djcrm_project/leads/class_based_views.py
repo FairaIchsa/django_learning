@@ -5,8 +5,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from agents.mixins import OrganiserMixin
 
-from .models import Lead
-from .forms import LeadModelForm, CustomUserCreationForm
+from .models import Lead, Category
+from .forms import LeadModelForm, AssignAgentForm, CustomUserCreationForm
 
 
 class SignUpView(generic.CreateView):
@@ -26,10 +26,29 @@ class LeadListView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         user = self.request.user
         if user.is_organiser:
-            queryset = Lead.objects.filter(organisation__user=user)
+            queryset = Lead.objects.filter(
+                organisation__user=user,
+                agent__isnull=False
+            )
         elif user.is_agent:
-            queryset = Lead.objects.filter(agent__user=user)      # а не agent=Agent.objects.get(user=user)
+            queryset = Lead.objects.filter(
+                agent__user=user,
+                agent__isnull=False
+            )   # а не agent=Agent.objects.get(user=user)
         return queryset
+    
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(LeadListView, self).get_context_data(**kwargs)
+        user = self.request.user
+        if user.is_organiser:
+            queryset = Lead.objects.filter(
+                organisation=user.organisation,
+                agent__isnull=True
+            )
+            context.update({
+                "unassigned_leads": queryset,
+            })
+        return context
 
 
 class LeadDetailView(LoginRequiredMixin, generic.DetailView):
@@ -80,4 +99,75 @@ class LeadDeleteView(OrganiserMixin, generic.DeleteView):
     def get_queryset(self):
         user = self.request.user
         queryset = Lead.objects.filter(organisation__user=user)
+        return queryset
+
+
+class AssignAgentView(generic.FormView):
+    template_name = "leads/assign_agent.html"
+    form_class = AssignAgentForm
+    success_url = reverse_lazy("leads:lead-list")
+
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super(AssignAgentView, self).get_form_kwargs(**kwargs)
+        kwargs.update({
+            "request": self.request
+        })
+        return kwargs
+
+    def form_valid(self, form):
+        agent = form.cleaned_data["agent"]
+        lead = Lead.objects.get(id=self.kwargs["pk"])
+        lead.agent = agent
+        lead.save()
+        return super(AssignAgentView, self).form_valid(form)
+
+
+class CategoryListView(LoginRequiredMixin, generic.ListView):
+    template_name = "leads/category_list.html"
+    context_object_name = "categories"
+
+    def get_context_data(self, **kwargs):
+        context = super(CategoryListView, self).get_context_data(**kwargs)
+
+        user = self.request.user
+        if user.is_organiser:
+            leads = Lead.objects.filter(organisation=user.organisation)
+        else:
+            leads = Lead.objects.filter(organisation=user.agent.organisation)
+
+        context.update({
+            "unassigned_lead_count": leads.filter(category__isnull=True).count()
+        })
+        return context
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_organiser:
+            queryset = Category.objects.filter(organisation=user.organisation)
+        else:
+            queryset = Category.objects.filter(organisation=user.agent.organisation)
+        return queryset
+
+
+class CategoryDetailView(LoginRequiredMixin, generic.DetailView):
+    template_name = "leads/category_detail.html"
+    context_object_name = "category"
+
+    # def get_context_data(self, **kwargs):
+    #     context = super(CategoryDetailView, self).get_context_data(**kwargs)
+    #
+    #     leads = self.get_object().leads.all()   # leads взято из related_name поля category модели Lead
+    #
+    #     context.update({
+    #         "leads": leads,
+    #     })
+    #     return context
+    #     Можно заменить выражением category.leads.all в шаблоне category_detail.html
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_organiser:
+            queryset = Category.objects.filter(organisation=user.organisation)
+        else:
+            queryset = Category.objects.filter(organisation=user.agent.organisation)
         return queryset
