@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Category list
+Category detail
 {% endblock %}
 
 {% block content %}
@@ -22,8 +22,14 @@ Category list
                 <tbody>
                 {% for lead in category.leads.all %}
                 <tr>
-                    <td class="px-4 py-3">{{ lead.first_name }}</td>
-                    <td class="px-4 py-3">{{ lead.last_name }}</td>
+
+                        <td class="px-4 py-3">
+                            <a class="text-indigo-500" href="{% url 'leads:lead-detail' lead.pk %}">{{ lead.first_name }}</a>
+                        </td>
+                        <td class="px-4 py-3">
+                            <a class="text-indigo-500" href="{% url 'leads:lead-detail' lead.pk %}">{{ lead.last_name }}</a>
+                        </td>
+
                 </tr>
                 {% endfor %}
                 </tbody>

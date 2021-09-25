@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'crispy_forms',
+    'crispy_tailwind',
+    
     'leads',
     'agents',
 ]
@@ -135,9 +139,12 @@ AUTH_USER_MODEL = 'leads.User'
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-# LOGIN_REDIRECT_URL = reverse_lazy("landing-page")    # перенаправление при входе в систему (django.contrib.auth.views.LoginView)
-# LOGIN_URL = reverse_lazy("login")
-#
-# LOGOUT_REDIRECT_URL = reverse_lazy("landing-page")
+LOGIN_REDIRECT_URL = reverse_lazy("landing-page")    # перенаправление при входе в систему (django.contrib.auth.views.LoginView)
+LOGIN_URL = reverse_lazy("login")
+
+LOGOUT_REDIRECT_URL = reverse_lazy("landing-page")
 # Походу, так делать не обязательно. Достаточно создать шаблон по нужному адресу
 # Например "register/login.html" для django.contrib.auth.views.LoginView
+
+CRISPY_ALLOWED_TEMPLATE_PACK = 'tailwind'
+CRISPY_TEMPLATE_PACK = 'tailwind'
